@@ -55,7 +55,7 @@ function Hero4() {
 
   const sendApiCall = () => {
     axios
-      .post('/api/share', {
+      .post(`${BASE_URL}/api/share`, {
         text: text,
         code: code,
       })
@@ -69,7 +69,7 @@ function Hero4() {
   }
 
   const handelGetText = () =>{
-    axios.post('/api/getText', {
+    axios.post(`${BASE_URL}/api/getText`, {
       code: dbCode,
    })
    .then((res)=>{
