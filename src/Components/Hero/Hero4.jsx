@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+
+
 function Hero4() {
 
   const [text , setText] = useState('')
