@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState , useCallback} from "react";
 import axios from "axios";
 
 
@@ -13,6 +13,7 @@ function Hero4() {
   const [showCode , setShowCode] = useState(false)
   const [dbCode , setDbCode] = useState('')
   const textAreaRef = useRef(null);
+  const codeForCopy = useRef(null)
 
 
   // const refText = useRef(null)
@@ -55,8 +56,10 @@ function Hero4() {
 
   const sendApiCall = () => {
     axios
-      .post(`${BASE_URL}/api/share`, {
-        text: text,
+    .post(`${BASE_URL}/api/share`, { //producation 
+    // .post('/api/share', {   //lochal
+  
+    text: text,
         code: code,
       })
       .then((response) => {
@@ -69,7 +72,11 @@ function Hero4() {
   }
 
   const handelGetText = () =>{
-    axios.post(`${BASE_URL}/api/getText`, {
+    axios
+    .post(`${BASE_URL}/api/getText`, { // producation 
+     
+    //  .post('/api/getText', { // for lochal 
+
       code: dbCode,
    })
    .then((res)=>{
@@ -89,6 +96,15 @@ function Hero4() {
     }, 100);
   };
 
+  const handleCopy = useCallback(() => {
+    if (codeForCopy.current) {
+      console.log(codeForCopy.current.value); // Logs the actual value
+      codeForCopy.current.select(); // Select entire input
+      codeForCopy.current.setSelectionRange(0, code.length); // Highlight text
+      window.navigator.clipboard.writeText(code); // Copy text to clipboard
+    }
+  }, [code]);
+  
   
 
 
@@ -108,8 +124,8 @@ function Hero4() {
         <div className="space-y-8">
           <div className="bg-gray-700 p-6 rounded-xl shadow-sm animate__animated animate__fadeInUp">
             <div className={`${showCode ? "flex" : "hidden"} flex shadow rounded-lg overflow-hidden bg-amber-50 w-2xs mb-4`}>
-              <input className="outline-none w-full py-1 px-3" type="text" value={code}  readOnly />
-              <button className="outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0" >Copy</button>
+              <input className="outline-none w-full py-1 px-3" type="text" value={code}  ref={codeForCopy} readOnly />
+              <button className="outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0 hover:cursor-pointer" onClick={handleCopy}>Copy</button>
             </div>
             <label
               htmlFor="inputText"
@@ -130,7 +146,7 @@ function Hero4() {
               value={text}
 
             ></textarea>    
-            <div className="mt-4 flex justify-evenly">
+            <div className="mt-4 flex-col md:flex-row flex justify-evenly gap-2.5">
               <button
                 className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition-colors duration-300"
                 onClick={handleReload}
@@ -139,7 +155,7 @@ function Hero4() {
               </button>
               <button
                 id="generateBtn"
-                className="px-6 py-2 bg-[#007bff] text-white rounded-lg hover:bg-[#0056b3] transition-colors duration-300 flex items-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed" 
+                className="px-6 py-2 bg-[#007bff] text-white  justify-center rounded-lg hover:bg-[#0056b3] transition-colors duration-300 flex items-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed" 
                 onClick={handelshareClick}
                 disabled={!text?.trim()}
               >
